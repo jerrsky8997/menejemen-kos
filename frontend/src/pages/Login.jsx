@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useLogin } from '../hooks/useUser';
+import { useLogin } from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
@@ -20,7 +20,7 @@ const Login = () => {
     });
   };
 
-  const handleLogin = (e) => {
+  const handleLogin =  (e) => {
     e.preventDefault();
 
     // Fix struktur argumen mutate sesuai standar TanStack Query
@@ -32,6 +32,9 @@ const Login = () => {
       {
         onSuccess: (data) => {
           console.log("Login sukses, data user didapat:", data);
+          const {token , user} = data;
+          localStorage.setItem('token', token);
+          localStorage.setItem('user', JSON.stringify(user));
           navigate("/dashboard");
         },
         onError: (error) => {

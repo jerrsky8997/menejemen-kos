@@ -10,7 +10,7 @@ const { protect, authorizeRoles } = require('../middleware/authMiddleware');
 // 1. POST: Registrasi Admin/Staff/Owner Baru (DIPROTEKSI)
 
 // Ditambahkan 'protect' dan 'authorizeRoles' agar hanya owner yang bisa meregistrasi akun baru
-router.post('/register', protect, authorizeRoles('owner'), async (req, res) => {
+router.post('/register', async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
@@ -98,11 +98,6 @@ router.post('/login', async (req, res) => {
 
 router.post('/logout' , async (req,res) => {
   try {
-    res.clearCookie('token' , {
-      httpOnly: true,
-      secure: (process.env.NODE_ENV || 'development') === "production",
-      sameSite: 'strict'
-    });
     res.status(200).json({ message: '👋 Logout berhasil!' });
   } catch (error) {
     res.status(500).json({ message: 'Terjadi kesalahan server', error: error.message });

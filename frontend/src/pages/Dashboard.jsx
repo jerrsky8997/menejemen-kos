@@ -1,12 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-// Contoh mengimport custom hooks TanStack Query yang nanti kamu buat
-// import { useGetDashboardStats, useGetRecentTransactions } from '../hooks/useDashboard';
+import QuickActionCards from '../components/QuickActionCards';
 
 const Dashboard = () => {
   const navigate = useNavigate();
 
-  // MOCK DATA (Ganti dengan data asli dari TanStack useQuery nanti)
+  // MOCK DATA (Nanti diganti query asli)
   const stats = {
     totalKamar: 24,
     kamarKosong: 6,
@@ -20,64 +19,16 @@ const Dashboard = () => {
     { id: 3, nama: "Siti Rahma", kamar: "A5", tanggal: "25 Mei 2026", status: "Lunas" },
   ];
 
+  const quickActions = [
+    {id:1 , icon:"👤", title:"Check-In Tenant", description:"Daftarkan penghuni baru yang baru masuk kamar.", navigate:"tenant/registration" ,border:"border-primary/50" , buttonText: "Buka Formulir"},
+    {id:2 , icon:"💵", title:"input bayar sewa", description:"Catat uang sewa masuk bulanan dari penghuni aktif", navigate:"/transaction", border:"border-secondary/50" , buttonText: "Catat Transaksi"},
+    {id:3 , icon:"🔑", title:"Atur kondisi kamar", description:"ubah status ketersediaan perbaikan atau fasilitas", navigate:"room/add-room" , border:"border-accent/50" , buttonText : "Lihat Kamar"},
+  ]
+
   return (
-    <div className="min-h-screen bg-base-200 flex antialiased text-neutral selection:bg-primary/10">
-      
-      {/* 1. SIDEBAR (Kiri) - Bersih dan Minimalis */}
-      <aside className="w-64 bg-base-100 border-r border-base-300 flex flex-col justify-between hidden md:flex">
-        <div className="p-6">
-          {/* Brand Logo */}
-          <div className="flex items-center gap-3 mb-10">
-            <div className="h-8 w-8 rounded-xl bg-primary flex items-center justify-center text-primary-content font-black text-lg text-white">
-              r
-            </div>
-            <span className="text-lg font-bold tracking-tight text-neutral">roomies.</span>
-          </div>
 
-          {/* Navigation Links */}
-          <nav className="flex flex-col gap-1">
-            <button className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-primary/10 text-primary font-medium text-sm text-left transition-all">
-              <span>📊</span> Dashboard
-            </button>
-            <button className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-neutral/70 hover:bg-base-200 hover:text-neutral font-medium text-sm text-left transition-all">
-              <span>🛏️</span> Manajemen Kamar
-            </button>
-            <button className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-neutral/70 hover:bg-base-200 hover:text-neutral font-medium text-sm text-left transition-all">
-              <span>👥</span> Data Penghuni
-            </button>
-            <button className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-neutral/70 hover:bg-base-200 hover:text-neutral font-medium text-sm text-left transition-all">
-              <span>💸</span> Transaksi Sewa
-            </button>
-          </nav>
-        </div>
-
-        {/* User Profile / Logout di bawah Sidebar */}
-        <div className="p-4 border-t border-base-300 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="avatar placeholder">
-              <div className="bg-neutral text-neutral-content w-8 rounded-full">
-                <span className="text-xs">AD</span>
-              </div>
-            </div>
-            <div>
-              <p className="text-xs font-semibold">Admin Kos</p>
-              <p className="text-[10px] text-neutral/50">Owner</p>
-            </div>
-          </div>
-          <button 
-            onClick={() => navigate('/')} 
-            className="btn btn-ghost btn-sm text-error hover:bg-error/10 p-1"
-            title="Log Out"
-          >
-            🚪
-          </button>
-        </div>
-      </aside>
-
-      {/* 2. KONTEN UTAMA (Kanan) */}
-      <main className="flex-1 p-6 md:p-10 overflow-y-auto">
-        
-        {/* Header Konten */}
+     <>
+      {/* Header Konten */}
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Overview Properti</h1>
@@ -88,10 +39,8 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* METRICS CARDS GRID (Sesuai aturan warna rich & minimalis kita) */}
+        {/* METRICS CARDS GRID */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-          
-          {/* Card Total Kamar */}
           <div className="bg-base-100 p-6 rounded-2xl border border-base-300 shadow-sm flex flex-col justify-between">
             <span className="text-xs font-semibold text-neutral/50 tracking-wider uppercase">Total Kamar</span>
             <div className="flex items-baseline gap-2 mt-2">
@@ -100,7 +49,6 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Card Kamar Kosong (Hijau - Secondary) */}
           <div className="bg-base-100 p-6 rounded-2xl border border-base-300 shadow-sm flex flex-col justify-between">
             <span className="text-xs font-semibold text-neutral/50 tracking-wider uppercase">Kamar Kosong</span>
             <div className="flex items-baseline gap-2 mt-2">
@@ -109,7 +57,6 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Card Kamar Terisi (Merah - Error) */}
           <div className="bg-base-100 p-6 rounded-2xl border border-base-300 shadow-sm flex flex-col justify-between">
             <span className="text-xs font-semibold text-neutral/50 tracking-wider uppercase">Kamar Terisi</span>
             <div className="flex items-baseline gap-2 mt-2">
@@ -118,18 +65,16 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Card Pendapatan */}
           <div className="bg-base-100 p-6 rounded-2xl border border-base-300 shadow-sm flex flex-col justify-between">
             <span className="text-xs font-semibold text-neutral/50 tracking-wider uppercase">Omzet Bulan Ini</span>
             <div className="mt-2">
               <span className="text-xl font-bold tracking-tight text-primary">{stats.pendapatanBulanIni}</span>
             </div>
           </div>
-
         </div>
 
         {/* TABLE DATA: Transaksi Terbaru */}
-        <div className="bg-base-100 rounded-2xl border border-base-300 shadow-sm p-6">
+        <div className="bg-base-100 rounded-2xl border border-base-300 shadow-sm p-6 mb-8">
           <div className="flex justify-between items-center mb-6">
             <div>
               <h2 className="text-lg font-bold tracking-tight">Aktivitas Pembayaran Terbaru</h2>
@@ -168,8 +113,21 @@ const Dashboard = () => {
           </div>
         </div>
 
-      </main>
-    </div>
+        <div className="bg-base-100 rounded-2xl border border-base-300 shadow-sm p-6">
+          <div className="mb-6">
+            <h2 className="text-lg font-bold tracking-tight">Aksi Cepat Operasional</h2>
+            <p className="text-xs text-neutral/50">Lakukan tindakan harian manajemen kos secara instan.</p>
+          </div>
+
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
+            {quickActions.map((action) => (
+              <>
+                <QuickActionCards icon={action.icon} title={action.title} description={action.description} border={action.border} navigate={action.navigate} buttonText={action.buttonText} />
+              </>
+            ))}
+            </div>
+          </div>
+     </>
   );
 };
 

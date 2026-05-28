@@ -9,9 +9,9 @@ const { protect, authorizeRoles } = require('../middleware/authMiddleware');
 // 1. POST: Menambah Kamar Kos Baru (HANYA ADMIN)
 // ========================================================
 // Ditambahkan protect dan authorizeRoles('admin') agar Staff & Owner tidak bisa menambah data
-router.post('/add', protect, authorizeRoles('admin'), async (req, res) => {
+router.post('/add',  async (req, res) => {
   try {
-    const { roomNumber, type, pricePerMonth, facilities, description } = req.body;
+    const { roomNumber, type, pricePerMonth, size ,facilities, description } = req.body;
 
     // Validasi input kosong wajib
     if (!roomNumber || !pricePerMonth) {
@@ -29,6 +29,7 @@ router.post('/add', protect, authorizeRoles('admin'), async (req, res) => {
       roomNumber,
       type,
       pricePerMonth,
+      size,
       facilities,
       description
     });
@@ -45,12 +46,21 @@ router.post('/add', protect, authorizeRoles('admin'), async (req, res) => {
 // 2. GET: Mengambil Semua Data Kamar Kos (ADMIN, STAFF, OWNER)
 // ========================================================
 // Ditambahkan protect dan authorizeRoles agar Owner, Staff, dan Admin bisa memantau data kamar
-router.get('/', protect, authorizeRoles('admin', 'staff', 'owner'), async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const rooms = await Room.find();
     res.status(200).json(rooms);
   } catch (error) {
     res.status(500).json({ message: 'Terjadi kesalahan server', error: error.message });
+  }
+});
+
+router.get("/available", async (req, res) => {
+  try {
+    const rooms = await Room.find({ status: "available" });
+    res.status(200).json(rooms);
+  } catch (error) {
+    res.status(500).json({ message: "Terjadi kesalahan server", error: error.message });
   }
 });
 
