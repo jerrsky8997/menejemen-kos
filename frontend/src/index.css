@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@plugin "daisyui" {
+    themes: "kosTheme --default";
+}
+
+@plugin "daisyui/theme" {
+    name: "kosTheme";
+    default: true;
+    color-scheme: light;
+    --color-primary: #3B82F6;
+    --color-secondary: #10B981;
+    --color-accent: #F59E0B;
+    --color-neutral: #1F2937;
+    --color-base-100: #FFFFFF;
+    --color-base-200: #F3F4F6;
+    --color-error: #F87171;
+}
