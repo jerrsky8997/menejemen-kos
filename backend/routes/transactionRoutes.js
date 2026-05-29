@@ -10,7 +10,7 @@ const { protect, authorizeRoles } = require('../middleware/authMiddleware');
 // 1. POST: Mencatat Transaksi Pembayaran Baru (ADMIN & STAFF)
 // ========================================================
 // Ditambahkan protect dan authorizeRoles('admin', 'staff') -> Akun Owner akan ditolak jika mencoba mencatat data
-router.post('/add', protect, authorizeRoles('admin', 'staff'), async (req, res) => {
+router.post('/add',  async (req, res) => {
   try {
     const { tenantId, amountPaid, periodMonth, paymentMethod, status } = req.body;
 
@@ -46,7 +46,7 @@ router.post('/add', protect, authorizeRoles('admin', 'staff'), async (req, res) 
 // 2. GET: Mengambil Semua Riwayat Transaksi (ADMIN, STAFF, OWNER)
 // ========================================================
 // Ditambahkan protect dan authorizeRoles agar Owner, Staff, dan Admin bisa melihat buku jurnal keuangan kos
-router.get('/', protect, authorizeRoles('admin', 'staff', 'owner'), async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     // Menggunakan populate ganda untuk menarik data penyewa dan kamar sekaligus
     const transactions = await Transaction.find()
