@@ -5,7 +5,8 @@ const cors = require('cors');
 const roomRoutes = require('./routes/roomRoutes');
 const tenantRoutes = require('./routes/tenantRoutes'); 
 const transactionRoutes = require('./routes/transactionRoutes'); 
-const authRoutes = require('./routes/authRoutes'); // 👈 1. Tambahan: Import file rute autentikasi (User)
+const authRoutes = require('./routes/authRoutes'); 
+const dashboardRoutes = require('./routes/dashboardRoutes');
 
 // Konfigurasi dotenv
 dotenv.config();
@@ -31,6 +32,7 @@ app.use('/api/rooms', roomRoutes);
 app.use('/api/tenants', tenantRoutes); 
 app.use('/api/transactions', transactionRoutes); 
 app.use('/api/auth', authRoutes); 
+app.use('/api/dashboard', dashboardRoutes);
 
 // Route Testing Sederhana
 app.get('/', (req, res) => {
