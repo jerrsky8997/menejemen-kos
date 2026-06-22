@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const Tenant = require('../models/Tenant');
-const Room = require('../models/Room');
-const Transaction = require('../models/Transaction');
+const Tenant = require('../models/tenant');
+const Room = require('../models/room');
+const Transaction = require('../models/transaction');
 const mongoose = require('mongoose');
 
 // IMPORT MITRA KEAMANAN: Hubungkan middleware pengecekan token dan role
@@ -121,6 +121,52 @@ router.get('/',  async (req, res) => {
   }
 });
 
+// 2a. GET: Mengambil Detail Penyewa secara Mendalam (Aggregation Pipeline)
+router.get('/:id', async (req, res) => {
+  try {
+    const tenantId = req.params.id;
+
+    const tenantDetail = await Tenant.aggregate([
+      { $match: { _id: new mongoose.Types.ObjectId(tenantId) } },
+      // Join dengan data Kamar
+      {
+        $lookup: {
+          from: 'rooms',
+          localField: 'room',
+          foreignField: '_id',
+          as: 'roomDetail'
+        }
+      },
+      { $unwind: { path: '$roomDetail', preserveNullAndEmptyArrays: true } },
+      // Join dengan data Transaksi
+      {
+        $lookup: {
+          from: 'transactions',
+          localField: '_id',
+          foreignField: 'tenant',
+          as: 'paymentHistory'
+        }
+      },
+      // Sort transaksi dari yang terbaru
+      {
+        $addFields: {
+          paymentHistory: {
+            $sortArray: { input: "$paymentHistory", sortBy: { createdAt: -1 } }
+          }
+        }
+      }
+    ]);
+
+    if (!tenantDetail || tenantDetail.length === 0) {
+      return res.status(404).json({ message: 'Penyewa tidak ditemukan!' });
+    }
+
+    res.status(200).json(tenantDetail[0]);
+  } catch (error) {
+    res.status(500).json({ message: 'Terjadi kesalahan server', error: error.message });
+  }
+});
+
 // 3. PUT: 
 
 router.put('/checkout/:id',  async (req, res) => {
@@ -153,5 +199,49 @@ router.put('/checkout/:id',  async (req, res) => {
     res.status(500).json({ message: 'Terjadi kesalahan server', error: error.message });
   }
 });
+
+router.put('/:id', async (req,res) => {
+  try {
+    const { name, 
+        nik, 
+        phone, 
+        emergencyContact, 
+        room, 
+      } = req.body
+    const tenant = await Tenant.findByIdAndUpdate(
+      req.params.id,
+      {
+        name,
+        nik,
+        phone,
+        emergencyContact,
+        room,
+      }
+    )
+
+    res.status(200).json({
+      message:'data tenant berhasil di update',
+      data:tenant
+    })
+  } catch (error) {
+    res.status(500).json({
+      message:error.message
+    })
+  }
+})
+
+router.delete('/:id', async(req,res) => {
+  try {
+    const tenant = await Tenant.findByIdAndDelete(req.params.id)
+    res.status(200).json({
+      message:"data tenant berhasil di hapus",
+      data:tenant
+    })
+  } catch (error) {
+    res.status(500).json({
+      message:error.message
+    })
+  }
+})
 
 module.exports = router;
