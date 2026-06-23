@@ -23,7 +23,6 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Koneksi ke MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('Berhasil terhubung ke database '))
   .catch((err) => console.error('Gagal terhubung ke MongoDB:', err));
@@ -31,7 +30,7 @@ mongoose.connect(process.env.MONGO_URI)
 // Rute Aplikasi
 app.use('/api/rooms', roomRoutes);
 app.use('/api/tenants', tenantRoutes); 
-app.use('/api/facilities',facilityRoutes)
+app.use('/api/facilities',facilityRoutes) // add this shit
 app.use('/api/transactions', transactionRoutes); 
 app.use('/api/auth', authRoutes); 
 app.use('/api/dashboard', dashboardRoutes);
